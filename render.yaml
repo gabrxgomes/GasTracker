@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: gastracker
+    env: docker
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: POSTGRES_URL
+        fromDatabase:
+          name: gastracker-db
+          property: connectionString
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: gastracker-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: gastracker-db
+          property: password
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_USERNAME
+        sync: false
+      - key: ETHERSCAN_API_KEY
+        sync: false
+
+databases:
+  - name: gastracker-db
+    databaseName: gastracker
+    user: gastracker_user
+    plan: free
+    region: oregon

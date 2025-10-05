@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(dir:*)",
+      "Bash(where mvn)",
+      "Read(//d/Estudo/Java/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

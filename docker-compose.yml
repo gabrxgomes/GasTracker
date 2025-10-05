@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: gastracker-db
+    environment:
+      POSTGRES_DB: gastracker
+      POSTGRES_USER: gastracker_user
+      POSTGRES_PASSWORD: gastracker_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gastracker_user -d gastracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gastracker-network
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gastracker-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      PORT: 8080
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/gastracker
+      POSTGRES_USER: gastracker_user
+      POSTGRES_PASSWORD: gastracker_pass
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
+      ETHERSCAN_API_KEY: ${ETHERSCAN_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gastracker-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  gastracker-network:
+    driver: bridge

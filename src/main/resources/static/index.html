@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GasTracker - Ethereum Gas Price Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <span class="logo-icon">▸</span>
+                <span class="logo-text">GasTracker</span>
+            </div>
+            <div class="nav-stats">
+                <div class="nav-stat-item">
+                    <span class="nav-stat-value" id="navActiveUsers">0</span>
+                    <span class="nav-stat-label">Active</span>
+                </div>
+                <div class="nav-stat-item">
+                    <span class="nav-stat-value" id="navTotalAlerts">0</span>
+                    <span class="nav-stat-label">Alerts</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="hero-title-main">Monitor Gas Prices</span>
+                    <span class="hero-title-sub">Never Overpay Again</span>
+                </h1>
+                <p class="hero-description">
+                    Real-time Ethereum gas tracking with smart alerts.
+                    Save money on every transaction.
+                </p>
+            </div>
+
+            <!-- Gas Price Hero Card -->
+            <div class="gas-hero-card">
+                <div class="gas-hero-content">
+                    <div class="gas-hero-label">Current Gas Price</div>
+                    <div class="gas-hero-display">
+                        <span class="gas-hero-value" id="currentGas">
+                            <span class="loading">Loading...</span>
+                        </span>
+                        <span class="gas-hero-unit">Gwei</span>
+                    </div>
+                    <div class="gas-hero-status" id="gasStatus">
+                        <div class="status-indicator"></div>
+                        <span>Checking network...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Grid Layout -->
+        <div class="main-grid">
+            <!-- Left Column: Cost Calculator -->
+            <aside class="sidebar-left">
+                <div class="cost-calculator-compact">
+                    <div class="calculator-header">
+                        <h3>$ Transaction Costs</h3>
+                        <div class="eth-price-badge">
+                            ETH: <span id="ethPrice">$3,000</span>
+                        </div>
+                    </div>
+
+                    <div class="cost-list">
+                        <div class="cost-item-compact">
+                            <div class="cost-icon-compact">→</div>
+                            <div class="cost-info">
+                                <div class="cost-name">Transfer</div>
+                                <div class="cost-amount" id="cost-transfer-usd">$0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="cost-item-compact">
+                            <div class="cost-icon-compact">⇄</div>
+                            <div class="cost-info">
+                                <div class="cost-name">Swap</div>
+                                <div class="cost-amount" id="cost-swap-usd">$0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="cost-item-compact">
+                            <div class="cost-icon-compact">◆</div>
+                            <div class="cost-info">
+                                <div class="cost-name">Mint NFT</div>
+                                <div class="cost-amount" id="cost-nft-usd">$0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="cost-item-compact">
+                            <div class="cost-icon-compact">✓</div>
+                            <div class="cost-info">
+                                <div class="cost-name">Approve</div>
+                                <div class="cost-amount" id="cost-approve-usd">$0.00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="calculator-footer">
+                        <small>Updates every 30s</small>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Column: Alert Form -->
+            <main class="main-content">
+                <div class="alert-form-card">
+                    <div class="form-header">
+                        <h2>Create Gas Alert</h2>
+                        <p>Get notified when gas drops below your threshold</p>
+                    </div>
+
+                    <form id="alertForm" class="alert-form">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="maxGasPrice">
+                                    <span class="label-icon">▸</span>
+                                    Max Gas Price (Gwei)
+                                </label>
+                                <div class="input-wrapper">
+                                    <input
+                                        type="number"
+                                        id="maxGasPrice"
+                                        name="maxGasPrice"
+                                        min="1"
+                                        max="1000"
+                                        placeholder="20"
+                                        required
+                                    >
+                                    <span class="input-suffix">Gwei</span>
+                                </div>
+                                <small>Alert when gas is below this value</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="telegramUsername">
+                                    <span class="label-icon">@</span>
+                                    Telegram Username
+                                </label>
+                                <div class="input-wrapper">
+                                    <input
+                                        type="text"
+                                        id="telegramUsername"
+                                        name="telegramUsername"
+                                        placeholder="@username"
+                                        pattern="^@?[a-zA-Z0-9_]{5,32}$"
+                                        required
+                                    >
+                                    <span class="input-icon">@</span>
+                                </div>
+                                <small>Your Telegram handle</small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-create-alert">
+                            <span class="btn-icon">▸</span>
+                            <span class="btn-text">Create Alert</span>
+                            <span class="btn-shine"></span>
+                        </button>
+
+                        <div id="result" class="result hidden"></div>
+                    </form>
+                </div>
+
+                <!-- How It Works -->
+                <div class="how-it-works">
+                    <h3>▸ How It Works</h3>
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Set Your Limit</h4>
+                                <p>Choose your max gas price</p>
+                            </div>
+                        </div>
+
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Connect Telegram</h4>
+                                <p>Add your @username</p>
+                            </div>
+                        </div>
+
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Start Bot</h4>
+                                <p>Type <code>/start</code> on bot</p>
+                            </div>
+                        </div>
+
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Get Alerts</h4>
+                                <p>Instant notifications</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Column: Stats & Info -->
+            <aside class="sidebar-right">
+                <!-- Stats Card -->
+                <div class="stats-card">
+                    <h3>▸ Live Stats</h3>
+                    <div class="stat-item">
+                        <div class="stat-icon">▪</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="activeUsers">0</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-icon">▪</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalAlerts">0</div>
+                            <div class="stat-label">Alerts 24h</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-icon">▪</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="successRate">0%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Badge -->
+                <div class="security-badge">
+                    <div class="badge-header">
+                        <span class="badge-icon">●</span>
+                        <span class="badge-title">Secure & Private</span>
+                    </div>
+                    <ul class="badge-features">
+                        <li>No passwords required</li>
+                        <li>XSS protection</li>
+                        <li>Rate limiting</li>
+                        <li>HTTPS encrypted</li>
+                    </ul>
+                </div>
+
+                <!-- Telegram Bot Info -->
+                <div class="bot-info">
+                    <div class="bot-avatar">▸</div>
+                    <div class="bot-details">
+                        <div class="bot-name" id="botUsername">@GasTrackerBot</div>
+                        <div class="bot-status">
+                            <div class="status-dot"></div>
+                            <span>Online</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>Powered by <strong>Etherscan API</strong></p>
+                <p class="footer-love">Built for the Ethereum community</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
