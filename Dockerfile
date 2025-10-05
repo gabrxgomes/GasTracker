@@ -10,4 +10,4 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/gas-tracker-1.0.0.jar app.jar
 EXPOSE $PORT
-CMD java -Dserver.port=$PORT -jar app.jar
+CMD java -Dserver.port=$PORT -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-production} -jar app.jar
